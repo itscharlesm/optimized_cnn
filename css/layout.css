@@ -9,10 +9,9 @@
    a. General Styles
    b. Header Styles
    c. About Section
-   d. Resume Section
+   d. simulator Section
    e. Genres Section
    f. Call To Action Section
-   g. Testimonials Section
    h. Contact Section
    i. Footer
 
@@ -56,7 +55,7 @@ header .banner {
    margin: 0 auto;
    width: 85%;
    padding-bottom: 30px;
-   s text-align: center;
+   text-align: center;
 }
 
 header .banner-text {
@@ -283,46 +282,58 @@ ul#nav li.current a {
 
 
 /* ------------------------------------------------------------------ */
-/* d. Resume Section
+/* d. simulator Section
 /* ------------------------------------------------------------------ */
 
-#resume {
-   background: #fff;
+#simulator {
    padding-top: 90px;
    padding-bottom: 72px;
    overflow: hidden;
+   position: relative;
+   background: url('../images/simulator_bg.jpg') center/cover no-repeat; /* Replace 'images/simulator_bg.jpg' with your actual image path */
+ } 
+
+#simulator::before {
+   content: "";
+   position: absolute;
+   top: 0;
+   right: 0;
+   bottom: 0;
+   left: 0;
+   background: inherit;
+   filter: blur(5px); /* Adjust the blur strength as needed */
 }
 
-#resume a,
-#resume a:visited {
+#simulator a,
+#simulator a:visited {
    color: #11ABB0;
 }
 
-#resume a:hover,
-#resume a:focus {
+#simulator a:hover,
+#simulator a:focus {
    color: #313131;
 }
 
-#resume h1 {
+#simulator h1 {
    font: 18px/24px 'opensans-bold', sans-serif;
    text-transform: uppercase;
    letter-spacing: 1px;
 }
 
-#resume h1 span {
+#simulator h1 span {
    border-bottom: 3px solid #11ABB0;
    padding-bottom: 6px;
 }
 
-#resume h3 {
+#simulator h3 {
    font: 25px/30px 'opensans-bold', sans-serif;
 }
 
-#resume .header-col {
+#simulator .header-col {
    padding-top: 9px;
 }
 
-#resume .main-col {
+#simulator .main-col {
    padding-right: 10%;
 }
 
@@ -333,22 +344,37 @@ ul#nav li.current a {
    border-bottom: 1px solid #E8E8E8;
 }
 
-#resume .info {
+#simulator .info {
    font: 16px/24px 'librebaskerville-italic', serif;
    color: #6E7881;
    margin-bottom: 18px;
    margin-top: 9px;
 }
 
-#resume .info span {
+#simulator .info span {
    margin-right: 5px;
    margin-left: 5px;
 }
 
-#resume .date {
+#simulator .date {
    font: 15px/24px 'opensans-regular', sans-serif;
    margin-top: 6px;
 }
+
+/* Card Styles */
+.white-card {
+   background-color: #ffffff; /* Change card background color */
+   padding: 30px; /* Increase padding for a bigger card */
+   border-radius: 15px; /* Make the edges round */
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a slight box shadow for a smoother look */
+}
+
+/* Row End */
+#simulator .row {
+   margin-bottom: 20px;
+}
+
+
 
 /*----------------------------------------------*/
 /*	Skill Bars
@@ -823,91 +849,6 @@ call-to-action .button {
    color: #D8D8D8;
 }
 
-/* ------------------------------------------------------------------
-/* g. Testimonials
-/* ------------------------------------------------------------------ */
-
-#testimonials {
-   background: #1F1F1F url(../images/testimonials-bg.jpg) no-repeat center center;
-   background-size: cover !important;
-   -webkit-background-size: cover !important;
-   background-attachment: fixed;
-
-   position: relative;
-   min-height: 200px;
-   width: 100%;
-   overflow: hidden;
-}
-
-#testimonials .text-container {
-   padding-top: 96px;
-   padding-bottom: 66px;
-}
-
-#testimonials h1 {
-   font: 18px/24px 'opensans-bold', sans-serif;
-   text-transform: uppercase;
-   letter-spacing: 3px;
-   color: #fff;
-}
-
-#testimonials h1 span {
-   display: none;
-}
-
-#testimonials .header-col {
-   padding-top: 9px;
-}
-
-#testimonials .header-col h1:before {
-   font-family: 'FontAwesome';
-   content: "\f10d";
-   padding-right: 10px;
-   font-size: 72px;
-   line-height: 72px;
-   text-align: left;
-   float: left;
-   color: #fff;
-}
-
-/*	Blockquotes */
-#testimonials blockquote {
-   margin: 0 0px 30px 0px;
-   padding-left: 0;
-   position: relative;
-   text-shadow: 0px 1px 3px rgba(0, 0, 0, 1);
-}
-
-#testimonials blockquote:before {
-   content: none;
-}
-
-#testimonials blockquote p {
-   font-family: 'librebaskerville-italic', serif;
-   padding: 0;
-   font-size: 24px;
-   line-height: 48px;
-   color: #fff
-}
-
-#testimonials blockquote cite {
-   display: block;
-   font-size: 12px;
-   font-style: normal;
-   line-height: 18px;
-   color: #fff;
-}
-
-#testimonials blockquote cite:before {
-   content: "\2014 \0020";
-}
-
-#testimonials blockquote cite a,
-#testimonials blockquote cite a:visited {
-   color: #8B9798;
-   border: none
-}
-
 /* Flex Slider
 /* ------------------------------------------------------------------ */
 
@@ -1202,9 +1143,8 @@ call-to-action .button {
 }
 
 
-/* ------------------------------------------------------------------ */
-/* i. Footer
-/* ------------------------------------------------------------------ */
+/* Footer Styles
+===================================================================== */
 
 footer {
    padding-top: 48px;
