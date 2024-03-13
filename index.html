@@ -538,58 +538,130 @@
                <a><i class="fa fa-music">&nbsp;&nbsp;</i></a>
                <span class="fake-btn">Choose files</span>
                <span class="file-msg">or drop files here</span>
-               <input class="file-input" type="file" multiple>
-               <div class="item-delete"></div>
+               <input class="file-input" id="audio_file" type="file" accept=".wav">
+               <div class="item-delete"></div> 
             </div>
          </div>
       </div> <!-- Drag and Drop Row End Row -->
 
-      <br><br><br>
 
+
+      <br><br><br>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script>
+         $(document).ready(function() {
+            $("#classifyButton").click(function() {
+               var fileInput = $('#audio_file')[0].files[0];
+               if (!fileInput) {
+                  console.error('No file selected.');
+                  return;
+               }
+               
+               var formData = new FormData();
+               formData.append('file', fileInput);
+
+               $("#classifyButton").html('<i class="fa fa-spinner fa-spin"></i> Loading...');
+
+               $.ajax({
+                  url: "http://127.0.0.1:8000/classify_music/",
+                  type: "POST",
+                  data: formData,
+                  processData: false,
+                  contentType: false,
+                  success: function(response) {
+                     console.log('File uploaded successfully');
+                     console.log(response)
+                     $("#classifyButton").html('Classify');
+                     displayClassificationResults(response);
+                     // Handle success response, update classification results
+                  },
+                  error: function(xhr, status, error) {
+                     console.error('File upload failed');
+                     $("#classifyButton").html('Classify');
+                     // Handle error response
+                  }
+               });
+            });
+         });
+
+         function displayClassificationResults(data) {
+            // Display predicted genres for CNN and OCNN
+            $("#CNN-genre").text("The Predicted Genre is " + data.CNN['Predicted Genre (CNN)']);
+            $("#OCNN-genre").text("The Predicted Genre is " + data.OCNN['Predicted Genre (XGB)']);
+
+            // Display CNN results
+            $("#CNN-blues").text(data.CNN['Predicted Percentages (CNN)'].blues.toFixed(2) + "%");
+            $("#CNN-classic").text(data.CNN['Predicted Percentages (CNN)'].classical.toFixed(2) + "%");
+            $("#CNN-country").text(data.CNN['Predicted Percentages (CNN)'].country.toFixed(2) + "%");
+            $("#CNN-disco").text(data.CNN['Predicted Percentages (CNN)'].disco.toFixed(2) + "%");
+            $("#CNN-hiphop").text(data.CNN['Predicted Percentages (CNN)'].hiphop.toFixed(2) + "%");
+            $("#CNN-jazz").text(data.CNN['Predicted Percentages (CNN)'].jazz.toFixed(2) + "%");
+            $("#CNN-metal").text(data.CNN['Predicted Percentages (CNN)'].metal.toFixed(2) + "%");
+            $("#CNN-pop").text(data.CNN['Predicted Percentages (CNN)'].pop.toFixed(2) + "%");
+            $("#CNN-reggae").text(data.CNN['Predicted Percentages (CNN)'].reggae.toFixed(2) + "%");
+            $("#CNN-rock").text(data.CNN['Predicted Percentages (CNN)'].rock.toFixed(2) + "%");
+
+            // Display OCNN results
+            $("#OCNN-blues").text(data.OCNN['Predicted Percentages (XGB)'].blues.toFixed(2) + "%");
+            $("#OCNN-classic").text(data.OCNN['Predicted Percentages (XGB)'].classical.toFixed(2) + "%");
+            $("#OCNN-country").text(data.OCNN['Predicted Percentages (XGB)'].country.toFixed(2) + "%");
+            $("#OCNN-disco").text(data.OCNN['Predicted Percentages (XGB)'].disco.toFixed(2) + "%");
+            $("#OCNN-hiphop").text(data.OCNN['Predicted Percentages (XGB)'].hiphop.toFixed(2) + "%");
+            $("#OCNN-jazz").text(data.OCNN['Predicted Percentages (XGB)'].jazz.toFixed(2) + "%");
+            $("#OCNN-metal").text(data.OCNN['Predicted Percentages (XGB)'].metal.toFixed(2) + "%");
+            $("#OCNN-pop").text(data.OCNN['Predicted Percentages (XGB)'].pop.toFixed(2) + "%");
+            $("#OCNN-reggae").text(data.OCNN['Predicted Percentages (XGB)'].reggae.toFixed(2) + "%");
+            $("#OCNN-rock").text(data.OCNN['Predicted Percentages (XGB)'].rock.toFixed(2) + "%");
+         }
+
+
+     </script>
       <div class="row">
-         <!-- First Column with Card -->
+         <!-- First Column with Card for CNN -->
          <div class="four columns">
-             <div class="w3-panel w3-card-4 white-card">
-                 <h1 style="text-align: center; font-weight: bold;">CNN</h1>
-                 <ul class="list-unstyled">
-                     <li style="color: black; font-weight: bold;">Blues: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Classic: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Country: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Disco: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Hip-hop: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Jazz: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Metal: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Pop: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Reggae: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Rock: <span>10%</span></li>
-                 </ul>
-             </div>
+            <div class="w3-panel w3-card-4 white-card">
+               <h1 style="text-align: center; font-weight: bold;">CNN</h1>
+               <h4 id="CNN-genre">The Predicted Genre is </h4>
+               <ul class="list-unstyled">
+                     <li style="color: black; font-weight: bold;">Blues: <span id="CNN-blues">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Classic: <span id="CNN-classic">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Country: <span id="CNN-country">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Disco: <span id="CNN-disco">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Hip-hop: <span id="CNN-hiphop">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Jazz: <span id="CNN-jazz">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Metal: <span id="CNN-metal">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Pop: <span id="CNN-pop">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Reggae: <span id="CNN-reggae">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Rock: <span id="CNN-rock">10%</span></li>
+               </ul>
+            </div>
          </div>
-     
+
          <!-- Second Column with Button "Classify" -->
          <div class="four columns">
-             <button class="btn btn-primary" style="position:relative; left:98px; top:180px;">Classify</button>
+            <button id="classifyButton" class="btn btn-primary" style="position:relative; left:98px; top:180px;">Classify</button>
          </div>
-     
-         <!-- Third Column with Card -->
+
+         <!-- Third Column with Card for Optimized CNN -->
          <div class="four columns">
-             <div class="w3-panel w3-card-4 white-card">
-                 <h1 style="text-align: center; font-weight: bold;">Optimized CNN</h1>
-                 <ul class="list-unstyled">
-                     <li style="color: black; font-weight: bold;">Blues: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Classic: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Country: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Disco: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Hip-hop: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Jazz: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Metal: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Pop: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Reggae: <span>10%</span></li>
-                     <li style="color: black; font-weight: bold;">Rock: <span>10%</span></li>
-                 </ul>
-             </div>
+            <div class="w3-panel w3-card-4 white-card">
+               <h1 style="text-align: center; font-weight: bold;">Optimized CNN</h1>
+               <h4  id="OCNN-genre">The Predicted Genre is </h4>
+               <ul class="list-unstyled">
+                     <li style="color: black; font-weight: bold;">Blues: <span id="OCNN-blues">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Classic: <span id="OCNN-classic">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Country: <span id="OCNN-country">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Disco: <span id="OCNN-disco">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Hip-hop: <span id="OCNN-hiphop">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Jazz: <span id="OCNN-jazz">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Metal: <span id="OCNN-metal">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Pop: <span id="OCNN-pop">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Reggae: <span id="OCNN-reggae">10%</span></li>
+                     <li style="color: black; font-weight: bold;">Rock: <span id="OCNN-rock">10%</span></li>
+               </ul>
+            </div>
          </div>
-     </div> <!-- Row End -->
+      </div> <!-- Row End -->
      
 
       <br><br><br>
