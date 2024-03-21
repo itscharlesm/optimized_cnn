@@ -100,12 +100,16 @@
                genre identification using machine-learning methods.
             </p>
 
-            <p style="text-align: justify">Furthermore, advocates will impose limitations on permissible music genres,
+            <p style="text-align: justify">Furthermore, Advocates will impose limitations on permissible music genres,
                stipulating that only Blues, Classical, Country, Disco, Hip-hop, Jazz, Metal, Pop, Reggae, and Rock are
                permitted. Any other genres (e.g., datasets) will be excluded to minimize problems when interpreting the
                results. In terms of datasets, Regarding datasets, the data will be sourced from GTZAN, a widely
                recognized dataset utilized in music genre classification research. This dataset includes ten genres,
-               each with 100 audio files.
+               each with 100 audio files and another 900 audio files that are not related to GTZAN, which are from
+               different songs. Every audio file is 30 seconds long. Ultimately, the suggested model is anticipated to
+               yield a more precise, quicker, and more effective result than the study that solely used convolutional
+               neural networks. The study exclusively utilizes WAV file format due to its compatibility with the
+               selected machine learning algorithms. Other formats, such as MP3, are not currently supported.
             </p>
 
             <div class="row">
@@ -530,112 +534,113 @@
 
       <!-- Drag and Drop Row -->
       <div class="row">
-          <br><br><br>
-          <div class="container">
-              <div class="file-drop-area">
-                  <a><i class="fa fa-music">&nbsp;&nbsp;</i></a>
-                  <span class="fake-btn">Choose files</span>
-                  <span class="file-msg">or drop files here</span>
-                  <input class="file-input" id="audio_file" type="file" accept=".wav">
-                  <div class="item-delete"></div> 
-              </div>
-          </div>
+         <br><br><br>
+         <div class="container">
+            <div class="file-drop-area">
+               <a><i class="fa fa-music">&nbsp;&nbsp;</i></a>
+               <span class="fake-btn">Choose files</span>
+               <span class="file-msg">or drop files here</span>
+               <input class="file-input" id="audio_file" type="file" accept=".wav">
+               <div class="item-delete"></div>
+            </div>
+         </div>
       </div> <!-- Drag and Drop Row End -->
-  
-      <br><br><br>
-  
-      <div class="row">
-          <!-- First Column with Card for CNN -->
-          <div class="four columns">
-              <div class="w3-panel w3-card-4 white-card">
-                  <h1 style="text-align: center; font-weight: bold;">CNN</h1>
-                  <h4 id="CNN-genre">The Predicted Genre is </h4>
-                  <ul id="CNN-results-list" class="list-unstyled">
-                      <!-- Dynamic list items will be inserted here -->
-                  </ul>
-              </div>
-          </div>
-  
-          <!-- Second Column with Button "Classify" -->
-          <div class="four columns">
-              <button id="classifyButton" class="btn btn-primary" style="position:relative; left:98px; top:180px;">Classify</button>
-          </div>
-  
-          <!-- Third Column with Card for Optimized CNN -->
-          <div class="four columns">
-              <div class="w3-panel w3-card-4 white-card">
-                  <h1 style="text-align: center; font-weight: bold;">Optimized CNN</h1>
-                  <h4 id="OCNN-genre">The Predicted Genre is </h4>
-                  <ul id="OCNN-results-list" class="list-unstyled">
-                      <!-- Dynamic list items will be inserted here -->
-                  </ul>
-              </div>
-          </div>
-      </div> <!-- Row End -->
-  
-      <br><br><br>
-  
-  </section> <!-- Simulator Section End-->
-  
-  <script>
-      $(document).ready(function() {
-          $("#classifyButton").click(function() {
-              var fileInput = $('#audio_file')[0].files[0];
-              if (!fileInput) {
-                  console.error('No file selected.');
-                  return;
-              }
-  
-              var formData = new FormData();
-              formData.append('file', fileInput);
-  
-              $("#classifyButton").html('<i class="fa fa-spinner fa-spin"></i> Loading...');
-  
-              $.ajax({
-                  url: "http://127.0.0.1:8000/classify_music/",
-                  type: "POST",
-                  data: formData,
-                  processData: false,
-                  contentType: false,
-                  success: function(response) {
-                      console.log('File uploaded successfully');
-                      console.log(response)
-                      $("#classifyButton").html('Classify');
-                      displayClassificationResults(response);
-                      // Handle success response, update classification results
-                  },
-                  error: function(xhr, status, error) {
-                      console.error('File upload failed');
-                      $("#classifyButton").html('Classify');
-                      // Handle error response
-                  }
-              });
-          });
-      });
-  
-      function displayClassificationResults(data) {
-        // Display predicted genres for CNN and OCNN
-        $("#CNN-genre").text("The Predicted Genre is " + data.CNN['Predicted Genre (CNN)']);
-        $("#OCNN-genre").text("The Predicted Genre is " + data.OCNN['Predicted Genre (OCNN)']);
 
-        // Function to generate list items dynamically
-        function generateListItems(predictedPercentages) {
+      <br><br><br>
+
+      <div class="row">
+         <!-- First Column with Card for CNN -->
+         <div class="four columns">
+            <div class="w3-panel w3-card-4 white-card">
+               <h1 style="text-align: center; font-weight: bold;">CNN</h1>
+               <h4 id="CNN-genre">The Predicted Genre is </h4>
+               <ul id="CNN-results-list" class="list-unstyled">
+                  <!-- Dynamic list items will be inserted here -->
+               </ul>
+            </div>
+         </div>
+
+         <!-- Second Column with Button "Classify" -->
+         <div class="four columns">
+            <button id="classifyButton" class="btn btn-primary"
+               style="position:relative; left:98px; top:180px;">Classify</button>
+         </div>
+
+         <!-- Third Column with Card for Optimized CNN -->
+         <div class="four columns">
+            <div class="w3-panel w3-card-4 white-card">
+               <h1 style="text-align: center; font-weight: bold;">Optimized CNN</h1>
+               <h4 id="OCNN-genre">The Predicted Genre is </h4>
+               <ul id="OCNN-results-list" class="list-unstyled">
+                  <!-- Dynamic list items will be inserted here -->
+               </ul>
+            </div>
+         </div>
+      </div> <!-- Row End -->
+
+      <br><br><br>
+
+   </section> <!-- Simulator Section End-->
+
+   <script>
+      $(document).ready(function () {
+         $("#classifyButton").click(function () {
+            var fileInput = $('#audio_file')[0].files[0];
+            if (!fileInput) {
+               console.error('No file selected.');
+               return;
+            }
+
+            var formData = new FormData();
+            formData.append('file', fileInput);
+
+            $("#classifyButton").html('<i class="fa fa-spinner fa-spin"></i> Loading...');
+
+            $.ajax({
+               url: "http://127.0.0.1:8000/classify_music/",
+               type: "POST",
+               data: formData,
+               processData: false,
+               contentType: false,
+               success: function (response) {
+                  console.log('File uploaded successfully');
+                  console.log(response)
+                  $("#classifyButton").html('Classify');
+                  displayClassificationResults(response);
+                  // Handle success response, update classification results
+               },
+               error: function (xhr, status, error) {
+                  console.error('File upload failed');
+                  $("#classifyButton").html('Classify');
+                  // Handle error response
+               }
+            });
+         });
+      });
+
+      function displayClassificationResults(data) {
+         // Display predicted genres for CNN and OCNN
+         $("#CNN-genre").text("The Predicted Genre is " + data.CNN['Predicted Genre (CNN)']);
+         $("#OCNN-genre").text("The Predicted Genre is " + data.OCNN['Predicted Genre (OCNN)']);
+
+         // Function to generate list items dynamically
+         function generateListItems(predictedPercentages) {
             var listItems = '';
             for (var genre in predictedPercentages) {
-                listItems += `<li style="color: black; font-weight: bold;">${genre}: <span>${predictedPercentages[genre].toFixed(2)}%</span></li>`;
+               listItems += `<li style="color: black; font-weight: bold;">${genre}: <span>${predictedPercentages[genre].toFixed(2)}%</span></li>`;
             }
             return listItems;
-        }
+         }
 
-        // Display CNN and OCNN results
-        ['CNN', 'OCNN'].forEach(function(model) {
+         // Display CNN and OCNN results
+         ['CNN', 'OCNN'].forEach(function (model) {
             for (var genre in data[model]['Predicted Percentages (' + model + ')']) {
-                $('#' + model + '-' + genre).html(data[model]['Predicted Percentages (' + model + ')'][genre].toFixed(2) + "%");
+               $('#' + model + '-' + genre).html(data[model]['Predicted Percentages (' + model + ')'][genre].toFixed(2) + "%");
             }
             $('#' + model + '-results-list').html(generateListItems(data[model]['Predicted Percentages (' + model + ')']));
-        });
-    }
-  </script>
+         });
+      }
+   </script>
 
 
 
