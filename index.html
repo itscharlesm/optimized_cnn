@@ -31,6 +31,45 @@
 	================================================== -->
    <link rel="shortcut icon" href="images/University_of_Mindanao_Logo.png">
 
+   <style>
+      .color-box {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         width: auto;
+         /* Adjust the width as needed */
+         margin: 20px auto;
+      }
+
+      .color-option {
+         cursor: pointer;
+         padding: 15px 30px;
+         /* Adjust padding as needed */
+         margin: 0 10px;
+         /* Adjust margin as needed */
+         border: 2px solid #ccc;
+         border-radius: 10px;
+         background-color: #fff;
+         /* Default background color */
+         font-weight: bold;
+         /* Make text bold */
+         font-size: 16px;
+         /* Increase font size */
+         color: black;
+         /* Set default text color */
+      }
+
+      .color-option.active {
+         background-color: #f0f0f0;
+         /* Active background color */
+         color: white;
+         /* Set text color to white when active */
+      }
+   </style>
+
+
+
+
 </head>
 
 <body>
@@ -111,6 +150,25 @@
                neural networks. The study exclusively utilizes WAV file format due to its compatibility with the
                selected machine learning algorithms. Other formats, such as MP3, are not currently supported.
             </p>
+
+            <!-- Color Box -->
+            <div class="row">
+               <div class="container">
+                  <div class="color-box">
+                     <div class="color-option" id="blues">Blues</div>
+                     <div class="color-option" id="classic">Classic</div>
+                     <div class="color-option" id="country">Country</div>
+                     <div class="color-option" id="disco">Disco</div>
+                     <div class="color-option" id="hip-hop">Hiphop</div>
+                     <div class="color-option" id="jazz">Jazz</div>
+                     <div class="color-option" id="metal">Metal</div>
+                     <div class="color-option" id="pop">Pop</div>
+                     <div class="color-option" id="reggae">Reggae</div>
+                     <div class="color-option" id="rock">Rock</div>
+                     <div class="color-option" id="noise">NOISE</div>
+                  </div>
+               </div>
+            </div> <!-- Color Box Row End -->
 
             <div class="row">
                <div class="columns">
@@ -546,11 +604,41 @@
          </div>
       </div> <!-- Drag and Drop Row End -->
 
-      <br><br><br>
+
+
+      <!-- Color Box -->
+      <div class="row">
+         <div class="twelve columns">
+            <div class="color-box">
+               <div class="color-option" id="blues">Blues</div>
+               <div class="color-option" id="classic">Classic</div>
+               <div class="color-option" id="country">Country</div>
+               <div class="color-option" id="disco">Disco</div>
+               <div class="color-option" id="hip-hop">Hiphop</div>
+               <div class="color-option" id="jazz">Jazz</div>
+               <div class="color-option" id="metal">Metal</div>
+               <div class="color-option" id="pop">Pop</div>
+               <div class="color-option" id="reggae">Reggae</div>
+               <div class="color-option" id="rock">Rock</div>
+               <div class="color-option" id="noise">NOISE</div>
+            </div>
+         </div>
+      </div> <!-- Color Box Row End -->
+
+      <!-- Audio Player -->
+      <div class="row">
+         <div class="twelve columns" style="text-align: center;">
+            <audio controls>
+               <source src="your-music-file.mp3" type="audio/mp3">
+               Your browser does not support the audio element.
+            </audio>
+         </div>
+      </div>
+
 
       <div class="row">
          <!-- First Column with Card for CNN -->
-         <div class="four columns">
+         <div class="four column">
             <div class="w3-panel w3-card-4 white-card">
                <h1 style="text-align: center; font-weight: bold;">CNN</h1>
                <h4 id="CNN-genre">The Predicted Genre is </h4>
@@ -868,6 +956,39 @@
          $('.file-input').val(null);
          $('.file-msg').text('or drop files here');
          $('.item-delete').css('display', 'none');
+      });
+   </script>
+
+   <script>
+      const colorOptions = {
+         blues: 'blue',
+         classic: 'orange',
+         country: 'brown',
+         disco: 'aqua',
+         'hip-hop': 'red',
+         jazz: 'violet',
+         metal: 'black',
+         pop: 'yellow',
+         reggae: 'green',
+         rock: 'purple',
+         noise: 'grey'
+      };
+
+      document.querySelectorAll('.color-option').forEach(option => {
+         option.addEventListener('click', function () {
+            const isActive = this.classList.contains('active');
+            if (!isActive) {
+               // Remove active class from all options
+               document.querySelectorAll('.color-option').forEach(option => {
+                  option.classList.remove('active');
+                  option.style.backgroundColor = '#fff'; // Reset background color
+               });
+
+               const color = colorOptions[this.id];
+               this.classList.add('active');
+               this.style.backgroundColor = color;
+            }
+         });
       });
    </script>
 

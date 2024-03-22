@@ -1243,3 +1243,28 @@ footer .social-links li:first-child {
 #go-top a:hover {
    background-color: #0F9095;
 }
+
+.color-box {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   width: auto; /* Adjust the width as needed */
+   margin: 20px auto;
+}
+
+.color-option {
+   cursor: pointer;
+   padding: 15px 30px; /* Adjust padding as needed */
+   margin: 0 10px; /* Adjust margin as needed */
+   border: 2px solid #ccc;
+   border-radius: 10px;
+   background-color: #fff; /* Default background color */
+   font-weight: bold; /* Make text bold */
+   font-size: 16px; /* Increase font size */
+   color: black; /* Set default text color */
+}
+
+.color-option.active {
+   background-color: #f0f0f0; /* Active background color */
+   color: white; /* Set text color to white when active */
+}
