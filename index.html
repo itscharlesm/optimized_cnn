@@ -940,38 +940,43 @@
       });
    </script>
 
-   <script>
-      const colorOptions = {
-         blues: 'blue',
-         classic: 'orange',
-         country: 'brown',
-         disco: 'aqua',
-         'hip-hop': 'red',
-         jazz: 'violet',
-         metal: 'black',
-         pop: 'yellow',
-         reggae: 'green',
-         rock: 'purple',
-         noise: 'grey'
-      };
+<script>
+   const colorOptions = {
+      blues: 'blue',
+      classic: 'orange',
+      country: 'brown',
+      disco: 'aqua',
+      'hip-hop': 'red',
+      jazz: 'violet',
+      metal: 'black',
+      pop: 'yellow',
+      reggae: 'green',
+      rock: 'purple',
+      noise: 'grey'
+   };
 
-      document.querySelectorAll('.color-option').forEach(option => {
-         option.addEventListener('click', function () {
-            const isActive = this.classList.contains('active');
-            if (!isActive) {
-               // Remove active class from all options
-               document.querySelectorAll('.color-option').forEach(option => {
-                  option.classList.remove('active');
-                  option.style.backgroundColor = '#fff'; // Reset background color
-               });
+   document.querySelectorAll('.color-option').forEach(option => {
+      option.addEventListener('click', function () {
+         const isActive = this.classList.contains('active');
+         if (!isActive) {
+            // Remove active class from all options
+            document.querySelectorAll('.color-option').forEach(option => {
+               option.classList.remove('active');
+               option.style.backgroundColor = '#fff'; // Reset background color
+            });
 
-               const color = colorOptions[this.id];
-               this.classList.add('active');
-               this.style.backgroundColor = color;
-            }
-         });
+            const color = colorOptions[this.id];
+            this.classList.add('active');
+            this.style.backgroundColor = color;
+         } else {
+            // If already active, remove active class
+            this.classList.remove('active');
+            this.style.backgroundColor = '#fff'; // Reset background color
+         }
       });
-   </script>
+   });
+</script>
+
 
 </body>
 
