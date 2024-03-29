@@ -584,7 +584,15 @@
             </div>
          </div>
       </div> <!-- Drag and Drop Row End -->
-
+      <!-- Audio Player -->
+      <div class="row">
+         <div class="twelve columns" style="text-align: center;">
+            <audio controls id="audioPlayer">
+               <source src="your-music-file.mp3" type="audio/mp3">
+               Your browser does not support the audio element.
+            </audio>
+         </div>
+      </div>
 
 
       <!-- Color Box -->
@@ -592,10 +600,10 @@
          <div class="twelve columns">
             <div class="color-box">
                <div class="color-option" id="blues">Blues</div>
-               <div class="color-option" id="classic">Classic</div>
+               <div class="color-option" id="classical">Classical</div>
                <div class="color-option" id="country">Country</div>
                <div class="color-option" id="disco">Disco</div>
-               <div class="color-option" id="hip-hop">Hiphop</div>
+               <div class="color-option" id="hiphop">Hiphop</div>
                <div class="color-option" id="jazz">Jazz</div>
                <div class="color-option" id="metal">Metal</div>
                <div class="color-option" id="pop">Pop</div>
@@ -606,15 +614,7 @@
          </div>
       </div> <!-- Color Box Row End -->
 
-      <!-- Audio Player -->
-      <div class="row">
-         <div class="twelve columns" style="text-align: center;">
-            <audio controls>
-               <source src="your-music-file.mp3" type="audio/mp3">
-               Your browser does not support the audio element.
-            </audio>
-         </div>
-      </div>
+      
 
 
       <div class="row">
@@ -653,18 +653,72 @@
 
    <script>
       $(document).ready(function () {
+         var predictedGenres = {
+            'CNN': null,
+            'OCNN': null
+         };
+   
+         var clickedGenres = []; // Array to keep track of clicked genres
+   
+         // Function to handle click on color options
+         $(".color-option").click(function() {
+            var selectedGenre = $(this).attr('id');
+            var isPredictedGenre = false;
+   
+            // Toggle font color based on prediction status
+            $(this).toggleClass('predicted');
+   
+            // Update font color of all color options
+            $(".color-option").each(function() {
+               var genre = $(this).attr('id');
+               var isGreen = $(this).hasClass('predicted');
+               $("." + genre).css({
+                  "color": isGreen ? "green" : "black",
+                  "font-weight": isGreen ? "bold" : "normal"
+               });
+            });
+
+
+   
+            // Update predicted genre for clicked model
+            var model = $(this).parent().parent().attr('id');
+            predictedGenres[model] = $(this).hasClass('predicted') ? selectedGenre : null;
+   
+            // Add or remove clicked genre from the array
+            if ($(this).hasClass('predicted')) {
+               if (!clickedGenres.includes(selectedGenre)) {
+                  clickedGenres.push(selectedGenre);
+               }
+            } else {
+               clickedGenres = clickedGenres.filter(genre => genre !== selectedGenre);
+            }
+         });
+   
+         $('#audio_file').on('change', function(event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+   
+            reader.onload = function(event) {
+               $('#audioPlayer').attr('src', event.target.result);
+            };
+   
+            if (file) {
+               reader.readAsDataURL(file);
+            }
+         });
+   
          $("#classifyButton").click(function () {
             var fileInput = $('#audio_file')[0].files[0];
             if (!fileInput) {
                console.error('No file selected.');
                return;
             }
-
+   
             var formData = new FormData();
             formData.append('file', fileInput);
-
+   
             $("#classifyButton").html('<i class="fa fa-spinner fa-spin"></i> Loading...');
-
+   
             $.ajax({
                url: "http://127.0.0.1:8000/classify_music/",
                type: "POST",
@@ -685,31 +739,36 @@
                }
             });
          });
-      });
-
-      function displayClassificationResults(data) {
-         // Display predicted genres for CNN and OCNN
-         $("#CNN-genre").text("The Predicted Genre is " + data.CNN['Predicted Genre (CNN)']);
-         $("#OCNN-genre").text("The Predicted Genre is " + data.OCNN['Predicted Genre (OCNN)']);
-
-         // Function to generate list items dynamically
-         function generateListItems(predictedPercentages) {
-            var listItems = '';
-            for (var genre in predictedPercentages) {
-               listItems += `<li style="color: black; font-weight: bold;">${genre}: <span>${predictedPercentages[genre].toFixed(2)}%</span></li>`;
+   
+         function displayClassificationResults(data) {
+            // Display predicted genres for CNN and OCNN
+            $("#CNN-genre").text("The Predicted Genre is " + data.CNN['Predicted Genre (CNN)']);
+            $("#OCNN-genre").text("The Predicted Genre is " + data.OCNN['Predicted Genre (OCNN)']);
+   
+            // Function to generate list items dynamically
+            function generateListItems(predictedPercentages) {
+               var listItems = '';
+               for (var genre in predictedPercentages) {
+                  var color = clickedGenres.includes(genre) ? 'green' : 'black'; // Check if genre was clicked
+                  var fontWeight = color === 'green' ? 'bold' : 'normal'; // Set font weight to bold if color is green
+                  listItems += `<li class="${genre}" style="color: ${color}; font-weight: ${fontWeight};">${genre}: <span>${predictedPercentages[genre].toFixed(2)}%</span></li>`;
+               }
+               return listItems;
             }
-            return listItems;
+
+   
+            // Display CNN and OCNN results
+            ['CNN', 'OCNN'].forEach(function (model) {
+               for (var genre in data[model]['Predicted Percentages (' + model + ')']) {
+                  $('#' + model + '-' + genre).html(data[model]['Predicted Percentages (' + model + ')'][genre].toFixed(2) + "%");
+               }
+               $('#' + model + '-results-list').html(generateListItems(data[model]['Predicted Percentages (' + model + ')']));
+            });
          }
-
-         // Display CNN and OCNN results
-         ['CNN', 'OCNN'].forEach(function (model) {
-            for (var genre in data[model]['Predicted Percentages (' + model + ')']) {
-               $('#' + model + '-' + genre).html(data[model]['Predicted Percentages (' + model + ')'][genre].toFixed(2) + "%");
-            }
-            $('#' + model + '-results-list').html(generateListItems(data[model]['Predicted Percentages (' + model + ')']));
-         });
-      }
+      });
    </script>
+   
+   
 
 
 
@@ -942,40 +1001,39 @@
 
 <script>
    const colorOptions = {
-      blues: 'blue',
-      classic: 'orange',
-      country: 'brown',
-      disco: 'aqua',
-      'hip-hop': 'red',
-      jazz: 'violet',
-      metal: 'black',
-      pop: 'yellow',
-      reggae: 'green',
-      rock: 'purple',
-      noise: 'grey'
+      blues: { background: 'blue', font: 'white' },
+      classical: { background: 'orange', font: 'black' },
+      country: { background: 'brown', font: 'white' },
+      disco: { background: 'aqua', font: 'black' },
+      hiphop: { background: 'red', font: 'white' },
+      jazz: { background: 'violet', font: 'white' },
+      metal: { background: 'black', font: 'white' },
+      pop: { background: 'yellow', font: 'black' },
+      reggae: { background: 'green', font: 'white' },
+      rock: { background: 'purple', font: 'white' },
+      noise: { background: 'grey', font: 'white' }
    };
 
-   document.querySelectorAll('.color-option').forEach(option => {
-      option.addEventListener('click', function () {
-         const isActive = this.classList.contains('active');
-         if (!isActive) {
-            // Remove active class from all options
-            document.querySelectorAll('.color-option').forEach(option => {
-               option.classList.remove('active');
-               option.style.backgroundColor = '#fff'; // Reset background color
-            });
+   $('.color-option').click(function() {
+      const option = colorOptions[this.id];
+      const currentColor = $(this).css('background-color');
+      const isDefaultColor = currentColor === 'rgb(255, 255, 255)' || currentColor === 'transparent';
 
-            const color = colorOptions[this.id];
-            this.classList.add('active');
-            this.style.backgroundColor = color;
-         } else {
-            // If already active, remove active class
-            this.classList.remove('active');
-            this.style.backgroundColor = '#fff'; // Reset background color
-         }
-      });
+      if (isDefaultColor) {
+         $(this).css('background-color', option.background);
+         $(this).css('color', option.font);
+      } else {
+         $(this).css('background-color', 'white');
+         $(this).css('color', 'black');
+      }
    });
+
 </script>
+
+
+
+
+
 
 
 </body>
